@@ -11,6 +11,7 @@
 #include "table/tableframe.h"
 #include "output/outputframe.h"
 #include "checker/checkerframe.h"
+#include "contractchecker/contractcheckerframe.h"
 #include "misc/customtabstyle.h"
 #include "setting/settingsframe.h"
 
@@ -59,6 +60,9 @@ void MainWindow::InitUI()
 
     QHBoxLayout *checkerLayout = new QHBoxLayout(ui->tabChecker);
     checkerLayout->addWidget(std::move(new CheckerFrame(ui->tabChecker)));
+
+    QHBoxLayout *contractcheckerLayout = new QHBoxLayout(ui->tabContractChecker);
+    contractcheckerLayout->addWidget(std::move(new ContractCheckerFrame(ui->tabContractChecker)));
 
     QHBoxLayout *settingLayout = new QHBoxLayout(ui->tabSettings);
     settingLayout->addWidget(std::move(new SettingsFrame(ui->tabSettings)));
