@@ -9,8 +9,10 @@ ContractCheckerFrame::ContractCheckerFrame(QWidget *parent) :
 {
     ui->setupUi(this); 
     this->clientSocket = new QTcpSocket();
-    this->address = "192.168.0.104";
+    this->address = "192.168.0.101";
     this->port = 19000;
+    connect(this->clientSocket,SIGNAL(QAbstractSocket::error(QAbstractSocket::SocketError socketError)),this,SLOT(receiveConnectedError(QTcpSocket::SocketError socketError)));
+    connect(this->clientSocket, SIGNAL(connected()), this, SLOT(connected()));
 }
 
 ContractCheckerFrame::~ContractCheckerFrame()
@@ -28,15 +30,14 @@ void ContractCheckerFrame::on_pushButtonCheck_clicked()
         QMessageBox::warning(nullptr, "Error", "Please input your smart contract!");
         return;
     }
-
-    connect(this->clientSocket,SIGNAL(error(QAbstractSocket::SocketError socketError)),this,SLOT(receiveConnectedError(QTcpSocket::SocketError socketError)));
-    this->clientSocket->connectToHost(this->address, this->port);
-    if(!this->clientSocket->waitForConnected(1000)){
-        QMessageBox::warning(nullptr, "Error", "Connection failure, Please check if the server is turned on!");
-        return;
+    if(QAbstractSocket::UnconnectedState == this->clientSocket->state()){
+        this->clientSocket->connectToHost(this->address, this->port);
+        if(!this->clientSocket->waitForConnected(1000)){
+            QMessageBox::warning(nullptr, "Error", "Connection failure, Please check if the server is turned on!");
+            return;
+        }
     }
 
-    connect(this->clientSocket, SIGNAL(connected()), this, SLOT(connected()));
     qint64 ret = this->clientSocket->write(rawContract.toStdString().c_str(), rawContract.size());
     this->clientSocket->waitForBytesWritten(300);
     if(-1 == ret){
