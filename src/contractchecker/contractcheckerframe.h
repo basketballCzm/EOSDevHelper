@@ -15,19 +15,24 @@ class ContractCheckerFrame : public QFrame
 public:
     explicit ContractCheckerFrame(QWidget *parent = 0);
     ~ContractCheckerFrame();
+    void sendZipFileData();
 
 private slots:
     void on_pushButtonCheck_clicked();
+    void on_pushButtonSendFile_clicked();
     void socketReadData();
+    void socketFileReadData();
     void connected();
-
-    void receiveConnectedError(QTcpSocket::SocketError socketError);
+    void fileConnected();
+    void on_pushButtonOpenFile_clicked();
 
 private:
     Ui::ContractCheckerFrame *ui;
     QTcpSocket *clientSocket;
+    QTcpSocket * clientFileSocket;
     QString address;
     int port;
+    int fport;
 };
 
 #endif // CONTRACTCHECKERFRAME_H
